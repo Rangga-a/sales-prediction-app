@@ -73,7 +73,7 @@ Prediksi penjualan toko menggunakan **XGBoost Regression**
 st.divider()
 
 # ===================================================
-# SIDEBAR — INPUT
+# SIDEBAR — INPUT (semua manual)
 # ===================================================
 
 st.sidebar.header("⚙️ Input Data")
@@ -83,32 +83,12 @@ store = st.sidebar.number_input(
 )
 
 day_of_week = st.sidebar.selectbox(
-    "Hari", [1, 2, 3, 4, 5, 6, 7],
+    "Day Of Week", [1, 2, 3, 4, 5, 6, 7],
     format_func=lambda x: ["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu","Minggu"][x-1]
-)
-
-day_of_month = st.sidebar.slider("Tanggal", 1, 31, 15)
-
-month = st.sidebar.selectbox(
-    "Bulan", list(range(1, 13)),
-    format_func=lambda x: ["Jan","Feb","Mar","Apr","Mei","Jun",
-                            "Jul","Agu","Sep","Okt","Nov","Des"][x-1]
-)
-
-week_of_year = st.sidebar.slider("Minggu ke-", 1, 53, 20)
-
-is_weekend_input = st.sidebar.selectbox(
-    "Is Weekend", [1, 0],
-    format_func=lambda x: "Ya" if x else "Tidak"
 )
 
 promo = st.sidebar.selectbox(
     "Promo", [1, 0],
-    format_func=lambda x: "Ya" if x else "Tidak"
-)
-
-school_hol = st.sidebar.selectbox(
-    "School Holiday", [0, 1],
     format_func=lambda x: "Ya" if x else "Tidak"
 )
 
@@ -120,22 +100,48 @@ state_hol = st.sidebar.selectbox(
     }[x]
 )
 
+school_hol = st.sidebar.selectbox(
+    "School Holiday", [0, 1],
+    format_func=lambda x: "Ya" if x else "Tidak"
+)
+
+month = st.sidebar.selectbox(
+    "Month", list(range(1, 13)),
+    format_func=lambda x: ["Jan","Feb","Mar","Apr","Mei","Jun",
+                            "Jul","Agu","Sep","Okt","Nov","Des"][x-1]
+)
+
+# Is Weekend: otomatis dari Day Of Week (read-only, ditampilkan saja)
+is_weekend = 1 if day_of_week in [6, 7] else 0
+st.sidebar.selectbox(
+    "Is Weekend (auto dari Day Of Week)",
+    [is_weekend],
+    format_func=lambda x: "Ya" if x else "Tidak",
+    disabled=True
+)
+
+is_payday_period = st.sidebar.selectbox(
+    "Is Payday Period", [1, 0],
+    format_func=lambda x: "Ya" if x else "Tidak"
+)
+
+store_avg_customer = st.sidebar.number_input(
+    "Store Avg Customer", min_value=0.0, value=600.0, step=10.0
+)
+
 # ===================================================
-# FEATURE ENGINEERING
+# DERIVED (auto dari tanggal hari ini, one-hot StateHoliday)
 # ===================================================
 
-# Nilai tetap (rata-rata historis seluruh toko)
-store_avg_customer = 600.0
-
-# Is Weekend: input manual oleh user
-is_weekend = is_weekend_input
-
-# Is Payday Period: otomatis dihitung dari tanggal
-is_payday_period = 1 if (day_of_month >= 25 or day_of_month == 2) else 0
+today = pd.Timestamp.now()
+day_of_month = int(today.day)
+week_of_year = int(today.isocalendar().week)
 
 state_hol_a = 1 if state_hol == "a" else 0
 state_hol_b = 1 if state_hol == "b" else 0
 state_hol_c = 1 if state_hol == "c" else 0
+
+nama_hari = ["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu","Minggu"][day_of_week - 1]
 
 # ===================================================
 # DATAFRAME — urutan & tipe HARUS sama dengan X_train
@@ -186,7 +192,7 @@ if st.button("🚀 Prediksi Sales", use_container_width=True, type="primary"):
     with col_left:
         st.markdown(f"""
         <div class="result-card">
-            <div class="label">ESTIMASI SALES</div>
+            <div class="label">ESTIMASI SALES — {nama_hari.upper()}</div>
             <div class="value">€ {pred:,.2f}</div>
         </div>
         """, unsafe_allow_html=True)
@@ -201,7 +207,7 @@ if st.button("🚀 Prediksi Sales", use_container_width=True, type="primary"):
         chips += f'<span class="chip {"chip-on" if school_hol else "chip-off"}">{"✅" if school_hol else "▫️"} School Holiday</span>'
         st.markdown(chips, unsafe_allow_html=True)
 
-    # ── Kanan: gauge chart ──
+    # ── Kanan: gauge chart sederhana ──
     with col_right:
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
@@ -224,19 +230,21 @@ if st.button("🚀 Prediksi Sales", use_container_width=True, type="primary"):
         st.write(f"""
         **Store ID:** {store}
 
-        **Hari:** {["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu","Minggu"][day_of_week-1]}
+        **Day Of Week:** {nama_hari} &nbsp;|&nbsp; **Day Of Month:** {day_of_month}
 
-        **Tanggal:** {day_of_month} (Bulan {month}, Minggu ke-{week_of_year})
+        **Month:** {month} &nbsp;|&nbsp; **Week Of Year:** {week_of_year}
 
         **Promo:** {"Ya" if promo else "Tidak"}
 
-        **Weekend:** {"Ya" if is_weekend else "Tidak"}
+        **Is Weekend (auto):** {"Ya" if is_weekend else "Tidak"}
 
-        **Payday Period:** {"Ya" if is_payday_period else "Tidak"}
+        **Is Payday Period:** {"Ya" if is_payday_period else "Tidak"}
 
         **School Holiday:** {"Ya" if school_hol else "Tidak"}
 
         **State Holiday:** {state_hol}
+
+        **Store Avg Customer:** {store_avg_customer:,.0f}
         """)
 
         st.dataframe(input_data, use_container_width=True)
@@ -250,7 +258,7 @@ else:
             Hasil prediksi akan muncul di sini
         </div>
         <div style="font-size: 0.83rem">
-            Lengkapi form di sidebar, lalu klik <strong>Prediksi Sales</strong>
+            Lengkapi input di sidebar, lalu klik <strong>Prediksi Sales</strong>
         </div>
     </div>
     """, unsafe_allow_html=True)
