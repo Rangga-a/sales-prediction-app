@@ -67,7 +67,7 @@ Prediksi penjualan toko menggunakan **XGBoost Regression**
 
 **Model Performance**
 
-✅ R² = 0.95 &nbsp;&nbsp; ✅ MAPE = 9.35% &nbsp;&nbsp; ✅ RMSE = €904.24
+✅ R² = 0.80 &nbsp;&nbsp; ✅ MAPE = 21% &nbsp;&nbsp; ✅ RMSE = 1717.23	
 """)
 
 st.divider()
