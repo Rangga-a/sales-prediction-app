@@ -2,7 +2,7 @@
 
 Aplikasi web untuk memprediksi penjualan toko menggunakan model **XGBoost Regression**, dibangun dengan **Streamlit**.
 
-🔗 **Live Demo:** https://rangga-a-sales-prediction-app.streamlit.app
+🔗 **Live Demo:** https://sales-prediction-app-bsqrz7yumyezg7waaux67l.streamlit.app/
 
 ---
 
