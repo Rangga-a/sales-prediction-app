@@ -1,12 +1,12 @@
-# 📊 Sales Prediction Dashboard
+# Sales Prediction Dashboard
 
 Aplikasi web untuk memprediksi penjualan toko menggunakan model **XGBoost Regression**, dibangun dengan **Streamlit**.
 
-🔗 **Live Demo:** https://sales-prediction-app-bsqrz7yumyezg7waaux67l.streamlit.app/
+**Live Demo:** https://sales-prediction-app-bsqrz7yumyezg7waaux67l.streamlit.app/
 
 ---
 
-## 📌 Tentang Project
+## Tentang Project
 
 Project ini memprediksi nilai *Sales* sebuah toko berdasarkan kondisi operasional harian (hari, promo, libur, dll) menggunakan model XGBoost yang dilatih dari data historis penjualan toko.
 
@@ -21,7 +21,7 @@ Project ini memprediksi nilai *Sales* sebuah toko berdasarkan kondisi operasiona
 
 ---
 
-## 🗂️ Struktur Project
+## Struktur Project
 
 ```
 sales_app/
@@ -33,7 +33,7 @@ sales_app/
 
 ---
 
-## ⚙️ Fitur Input
+## Fitur Input
 
 | Fitur | Keterangan |
 |---|---|
@@ -51,7 +51,7 @@ sales_app/
 
 ---
 
-## 🚀 Cara Menjalankan Lokal
+## Cara Menjalankan Lokal
 
 ```bash
 # 1. Clone repo
@@ -74,13 +74,13 @@ Aplikasi akan terbuka otomatis di `http://localhost:8501`.
 
 ---
 
-## 🌐 Deploy
+## Deploy
 
 Aplikasi ini dideploy menggunakan **Streamlit Community Cloud**. Setiap `git push` ke branch `main` akan otomatis memicu redeploy.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Python**
 - **XGBoost** — model regresi
@@ -90,7 +90,7 @@ Aplikasi ini dideploy menggunakan **Streamlit Community Cloud**. Setiap `git pus
 
 ---
 
-## ⚠️ Catatan
+## Catatan
 
 - Model dilatih menggunakan data historis penjualan ritel.
 - Beberapa fitur (`store_avg_customer`) menggunakan nilai input manual sebagai pendekatan, karena data historis real-time per toko tidak tersedia di aplikasi.
